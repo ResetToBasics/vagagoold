@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Agendamento, Log, Sala, User } from './models';
-import { mockAgendamentos, mockLogs, mockSalas, mockUsuarios } from './mocks/data';
+import { seedAgendamentos, seedLogs, seedSalas, seedUsuarios } from './seed-data';
 
 const obterIdMapeado = (mapa: Map<string, string>, id: string, entidade: string) => {
     const novoId = mapa.get(id);
@@ -15,20 +15,20 @@ export const seedDatabase = async () => {
     if (usuariosExistem > 0) return;
 
     const mapaUsuarios = new Map<string, string>();
-    const usuariosSeed = mockUsuarios.map((usuario) => {
+    const usuariosSeed = seedUsuarios.map((usuario) => {
         const id = randomUUID();
         mapaUsuarios.set(usuario.id, id);
         return { ...usuario, id };
     });
 
     const mapaSalas = new Map<string, string>();
-    const salasSeed = mockSalas.map((sala) => {
+    const salasSeed = seedSalas.map((sala) => {
         const id = randomUUID();
         mapaSalas.set(sala.id, id);
         return { ...sala, id };
     });
 
-    const agendamentosSeed = mockAgendamentos.map((agendamento) => ({
+    const agendamentosSeed = seedAgendamentos.map((agendamento) => ({
         ...agendamento,
         id: randomUUID(),
         clienteId: obterIdMapeado(mapaUsuarios, agendamento.clienteId, 'cliente'),
@@ -36,7 +36,7 @@ export const seedDatabase = async () => {
         dataHora: new Date(agendamento.dataHora),
     }));
 
-    const logsSeed = mockLogs.map((log) => ({
+    const logsSeed = seedLogs.map((log) => ({
         ...log,
         id: randomUUID(),
         clienteId: obterIdMapeado(mapaUsuarios, log.clienteId, 'cliente'),

@@ -5,12 +5,9 @@ import { ClienteLayout } from '@/components/layout';
 import { CampoBusca, CampoData } from '@/components/forms';
 import { EstadoVazio } from '@/components/ui/EstadoVazio';
 import { IconeCalendario, IconeUsuario } from '@/components/ui/Icones';
-import { LOGS_MOCK } from '@/mocks';
 import { logService } from '@/services';
 import { LABELS_MODULO, LABELS_TIPO_ATIVIDADE, LogSistema } from '@/types';
 import { formatarDataHora } from '@/utils';
-
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
 
 export default function LogsClientePage() {
     const [logs, setLogs] = useState<LogSistema[]>([]);
@@ -21,12 +18,6 @@ export default function LogsClientePage() {
         let ativo = true;
 
         const carregarDados = async () => {
-            if (usarMocks) {
-                if (!ativo) return;
-                setLogs(LOGS_MOCK);
-                return;
-            }
-
             try {
                 const logsResp = await logService.listar();
 
@@ -34,7 +25,8 @@ export default function LogsClientePage() {
                 setLogs(logsResp.dados);
             } catch (erro) {
                 if (!ativo) return;
-                setLogs(LOGS_MOCK);
+                console.error('Erro ao carregar logs:', erro);
+                setLogs([]);
             }
         };
 

@@ -9,10 +9,7 @@ import { useEffect, useState } from 'react';
 import { ClienteLayout } from '@/components/layout';
 import { clienteService } from '@/services';
 import { authStorage } from '@/utils';
-import { CLIENTES_MOCK } from '@/mocks';
 import type { Cliente } from '@/types';
-
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
 
 interface DadosFormulario {
     nome: string;
@@ -85,19 +82,13 @@ export default function MinhaContaClientePage() {
                 setNomeSidebar(cliente.nome);
             };
 
-            if (usarMocks) {
-                if (!ativo) return;
-                preencherFormulario(CLIENTES_MOCK[0]);
-                return;
-            }
-
             try {
                 const resposta = await clienteService.buscarMe();
                 if (!ativo) return;
                 preencherFormulario(resposta.dados);
             } catch (erro) {
                 if (!ativo) return;
-                preencherFormulario(CLIENTES_MOCK[0]);
+                console.error('Erro ao carregar dados do cliente:', erro);
             }
         };
 
@@ -119,28 +110,22 @@ export default function MinhaContaClientePage() {
         try {
             const nomeCompleto = `${dados.nome} ${dados.sobrenome}`.trim();
 
-            if (!usarMocks) {
-                const resposta = await clienteService.atualizarMe({
-                    nome: nomeCompleto,
-                    email: dados.email,
-                    endereco: {
-                        logradouro: dados.endereco,
-                        numero: dados.numero,
-                        complemento: dados.complemento || undefined,
-                        bairro: dados.bairro,
-                        cidade: dados.cidade,
-                        estado: dados.estado,
-                        cep: dados.cep,
-                    },
-                });
+            const resposta = await clienteService.atualizarMe({
+                nome: nomeCompleto,
+                email: dados.email,
+                endereco: {
+                    logradouro: dados.endereco,
+                    numero: dados.numero,
+                    complemento: dados.complemento || undefined,
+                    bairro: dados.bairro,
+                    cidade: dados.cidade,
+                    estado: dados.estado,
+                    cep: dados.cep,
+                },
+            });
 
-                setNomeSidebar(resposta.dados.nome);
-                authStorage.atualizarUsuario({ nome: resposta.dados.nome, email: resposta.dados.email });
-                return;
-            }
-
-            setNomeSidebar(nomeCompleto);
-            authStorage.atualizarUsuario({ nome: nomeCompleto, email: dados.email });
+            setNomeSidebar(resposta.dados.nome);
+            authStorage.atualizarUsuario({ nome: resposta.dados.nome, email: resposta.dados.email });
         } catch (erro) {
             console.error('Erro ao atualizar dados:', erro);
         } finally {

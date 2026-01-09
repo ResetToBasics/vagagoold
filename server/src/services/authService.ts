@@ -1,24 +1,17 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
-import { mockUsuarios } from '../mocks/data';
 import { User } from '../models';
 import { ApiError } from '../utils/http';
 
-const criarPayload = (usuario: User | (typeof mockUsuarios)[number]) => ({
+const criarPayload = (usuario: User) => ({
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
     tipo: usuario.role,
 });
 
-const buscarUsuario = async (email: string) => {
-    if (env.useMocks) {
-        return mockUsuarios.find((usuario) => usuario.email === email) || null;
-    }
-
-    return User.findOne({ where: { email } });
-};
+const buscarUsuario = async (email: string) => User.findOne({ where: { email } });
 
 export const authService = {
     login: async (role: 'admin' | 'cliente', email: string, senha: string) => {

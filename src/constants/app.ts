@@ -22,11 +22,3 @@ export const OPCOES_DURACAO_BLOCO = [
     { valor: 45, label: '45 minutos' },
     { valor: 60, label: '60 minutos' },
 ] as const;
-
-/**
- * Informações do usuário admin (mock para demonstração)
- */
-export const USUARIO_ADMIN = {
-    nome: 'Mateus Barbosa',
-    cargo: 'Admin',
-} as const;

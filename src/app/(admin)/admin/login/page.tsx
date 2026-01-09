@@ -10,8 +10,6 @@ import { LogoVagaGoold } from '@/components/ui/Icones';
 import { authService } from '@/services';
 import { authStorage } from '@/utils';
 
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
-
 /**
  * Página de Login do Admin
  */
@@ -30,18 +28,6 @@ export default function LoginAdminPage() {
         setCarregando(true);
 
         try {
-            if (usarMocks) {
-                authStorage.salvarSessao('mock-token-admin', {
-                    id: 'usr-admin',
-                    nome: 'Mateus Barbosa',
-                    email,
-                    tipo: 'admin',
-                });
-                document.cookie = 'admin_session=true; path=/; max-age=86400';
-                window.location.href = '/admin/agendamentos';
-                return;
-            }
-
             const resposta = await authService.loginAdmin({ email, senha });
             authStorage.salvarSessao(resposta.dados.token, resposta.dados.usuario);
             document.cookie = 'admin_session=true; path=/; max-age=86400';

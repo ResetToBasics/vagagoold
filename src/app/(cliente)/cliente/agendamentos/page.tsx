@@ -7,11 +7,8 @@ import { useModal } from '@/hooks';
 import { EstadoVazio } from '@/components/ui/EstadoVazio';
 import { IconeCalendario, IconeRelogio, IconeSetaBaixo } from '@/components/ui/Icones';
 import { agendamentoService } from '@/services';
-import { AGENDAMENTOS_MOCK, SALAS_MOCK } from '@/mocks';
 import { authStorage, formatarDataHora } from '@/utils';
 import type { Agendamento, SalaAgendamento, StatusAgendamento } from '@/types';
-
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
 
 const STATUS_LABELS: Record<StatusAgendamento, string> = {
     pendente: 'Em análise',
@@ -55,13 +52,6 @@ export default function AgendamentosClientePage() {
         let ativo = true;
 
         const carregarDados = async () => {
-            if (usarMocks) {
-                if (!ativo) return;
-                setAgendamentos(AGENDAMENTOS_MOCK);
-                setSalas(SALAS_MOCK);
-                return;
-            }
-
             try {
                 const [agendamentosResp, salasResp] = await Promise.all([
                     agendamentoService.listar(),
@@ -73,8 +63,9 @@ export default function AgendamentosClientePage() {
                 setSalas(salasResp.dados);
             } catch (erro) {
                 if (!ativo) return;
-                setAgendamentos(AGENDAMENTOS_MOCK);
-                setSalas(SALAS_MOCK);
+                console.error('Erro ao carregar agendamentos:', erro);
+                setAgendamentos([]);
+                setSalas([]);
             }
         };
 
@@ -113,34 +104,11 @@ export default function AgendamentosClientePage() {
 
         const dataHora = `${novoAgendamento.data}T${novoAgendamento.horario}:00`;
         const salaId = novoAgendamento.salaId;
-        const salaSelecionada = salas.find((sala) => sala.id === salaId);
         const usuario = authStorage.obterUsuario();
         const clienteId = usuario?.id;
-        const clienteNome = usuario?.nome ?? 'Cliente';
 
         setSalvandoAgendamento(true);
         setErroAgendamento('');
-
-        if (usarMocks) {
-            setAgendamentos((estadoAtual) => [
-                {
-                    id: `ag-${Date.now()}`,
-                    dataHora,
-                    clienteId: clienteId ?? 'cli-001',
-                    clienteNome,
-                    salaId,
-                    salaNome: salaSelecionada?.nome || 'Sala 012',
-                    status: 'pendente',
-                    criadoEm: new Date().toISOString(),
-                    atualizadoEm: new Date().toISOString(),
-                },
-                ...estadoAtual,
-            ]);
-            setNovoAgendamento({ data: '', horario: '', salaId: '' });
-            setSalvandoAgendamento(false);
-            modal.fechar();
-            return;
-        }
 
         if (!clienteId) {
             setErroAgendamento('Sessão expirada. Faça login novamente.');

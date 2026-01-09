@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LogoVagaGoold, IconeCalendario, IconeUsuarios, IconeLista, IconeSetaBaixo } from '../ui/Icones';
-import { MENU_ADMIN, USUARIO_ADMIN } from '@/constants';
+import { MENU_ADMIN } from '@/constants';
 import { authStorage } from '@/utils';
 
 /**
@@ -27,6 +27,7 @@ export function Sidebar() {
     const router = useRouter();
     const profileRef = useRef<HTMLDivElement | null>(null);
     const [menuAberto, setMenuAberto] = useState(false);
+    const [nomeAdmin, setNomeAdmin] = useState('Admin');
 
     /**
      * Renderiza o ícone correto baseado no tipo
@@ -79,6 +80,13 @@ export function Sidebar() {
         };
     }, [menuAberto]);
 
+    useEffect(() => {
+        const usuario = authStorage.obterUsuario();
+        if (usuario?.nome) {
+            setNomeAdmin(usuario.nome);
+        }
+    }, []);
+
     return (
         <aside className="admin-sidebar">
             {/* Área do logo */}
@@ -115,8 +123,8 @@ export function Sidebar() {
                     aria-haspopup="menu"
                 >
                     <div className="admin-user-info">
-                        <h4>{USUARIO_ADMIN.nome}</h4>
-                        <p>{USUARIO_ADMIN.cargo}</p>
+                        <h4>{nomeAdmin}</h4>
+                        <p>Admin</p>
                     </div>
                     <IconeSetaBaixo className={`admin-profile-chevron${menuAberto ? ' admin-profile-chevron--open' : ''}`} />
                 </button>

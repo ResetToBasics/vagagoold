@@ -10,10 +10,10 @@ server/
 │   ├── config/           # Variáveis e configs
 │   ├── controllers/      # Controllers HTTP
 │   ├── middlewares/      # Autenticação e erros
-│   ├── mocks/            # Mocks para testes
 │   ├── models/           # Models Sequelize
 │   ├── routes/           # Rotas da API
 │   ├── services/         # Regras de negócio
+│   ├── seed-data.ts      # Dados iniciais (seed)
 │   ├── utils/            # Helpers
 │   ├── app.ts            # App Express
 │   └── server.ts         # Bootstrap do servidor
@@ -38,12 +38,6 @@ src/
 ├── hooks/                # Hooks customizados
 │   └── useModal.ts      # Hook para controle de modais
 │
-├── mocks/                # Mocks para testes e fallback
-│   ├── agendamentos.ts
-│   ├── clientes.ts
-│   ├── logs.ts
-│   └── salas.ts
-│
 ├── services/             # Serviços para comunicação com API
 │   ├── api.ts           # Cliente HTTP base
 │   ├── agendamento.service.ts
@@ -60,4 +54,3 @@ src/
 └── utils/                # Funções utilitárias
     └── formatacao.ts    # Helpers de formatação
 ```
-

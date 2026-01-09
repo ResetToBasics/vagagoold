@@ -10,8 +10,6 @@ import { useRouter } from 'next/navigation';
 import { LogoVagaGoold } from '@/components/ui/Icones';
 import { clienteService } from '@/services';
 
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
-
 /**
  * Interface para dados do formulário de cadastro
  */
@@ -162,12 +160,6 @@ export default function CadastroClientePage() {
         setCarregando(true);
 
         try {
-            if (usarMocks) {
-                await new Promise((resolve) => setTimeout(resolve, 500));
-                router.push('/login');
-                return;
-            }
-
             await clienteService.criar({
                 nome: `${dados.nome} ${dados.sobrenome}`.trim(),
                 email: dados.email,

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { clienteService } from '../services/clienteService';
+import { logService } from '../services/logService';
 import { ApiError, asyncHandler } from '../utils/http';
 
 export const listarClientes = asyncHandler(async (_req: Request, res: Response) => {
@@ -58,6 +59,20 @@ export const atualizarClienteLogado = asyncHandler(async (req: Request, res: Res
     if (endereco !== undefined) dadosAtualizacao.endereco = endereco;
 
     const cliente = await clienteService.atualizar(usuarioId, dadosAtualizacao);
+
+    try {
+        await logService.criar({
+            clienteId: usuarioId,
+            tipoAtividade: email ? 'atualizacao_email' : 'atualizacao_perfil',
+            modulo: 'minha_conta',
+            descricao: 'Atualizacao de dados da conta',
+            ipOrigem: req.ip,
+            userAgent: req.headers['user-agent'] as string | undefined,
+        });
+    } catch (erro) {
+        console.error('Erro ao registrar log de perfil:', erro);
+    }
+
     res.json(cliente);
 });
 

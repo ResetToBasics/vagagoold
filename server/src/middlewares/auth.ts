@@ -10,10 +10,6 @@ interface TokenPayload {
 
 export const requireAuth = (roles?: string[]) => {
     return (req: Request, _res: Response, next: NextFunction) => {
-        if (env.useMocks) {
-            return next();
-        }
-
         const header = req.headers.authorization;
         if (!header) {
             return next(new ApiError(401, 'Token nao informado'));

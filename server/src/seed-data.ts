@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 
 const hashSenha = (senha: string) => bcrypt.hashSync(senha, 10);
 
-export const mockUsuarios = [
+export const seedUsuarios = [
     {
         id: 'usr-admin',
         nome: 'Mateus Barbosa',
@@ -69,7 +69,7 @@ export const mockUsuarios = [
     },
 ];
 
-export const mockSalas = [
+export const seedSalas = [
     {
         id: 'sala-012',
         nome: 'Sala 012',
@@ -88,7 +88,7 @@ export const mockSalas = [
     },
 ];
 
-export const mockAgendamentos = [
+export const seedAgendamentos = [
     {
         id: 'ag-001',
         dataHora: '2025-01-22T16:00:00',
@@ -126,7 +126,7 @@ export const mockAgendamentos = [
     },
 ];
 
-export const mockLogs = [
+export const seedLogs = [
     {
         id: 'log-001',
         clienteId: 'cli-001',

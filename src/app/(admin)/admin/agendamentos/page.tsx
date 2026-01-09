@@ -8,11 +8,8 @@ import { EstadoVazio } from '@/components/ui/EstadoVazio';
 import { IconeRelogio } from '@/components/ui/Icones';
 import { OPCOES_DURACAO_BLOCO } from '@/constants';
 import { agendamentoService } from '@/services';
-import { AGENDAMENTOS_MOCK, SALAS_MOCK } from '@/mocks';
 import { formatarDataHora } from '@/utils';
 import type { Agendamento, SalaAgendamento, StatusAgendamento } from '@/types';
-
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
 
 const STATUS_LABELS: Record<StatusAgendamento, string> = {
     pendente: 'Em análise',
@@ -64,13 +61,6 @@ export default function AgendamentosPage() {
         let ativo = true;
 
         const carregarDados = async () => {
-            if (usarMocks) {
-                if (!ativo) return;
-                setAgendamentos(AGENDAMENTOS_MOCK);
-                setSalas(SALAS_MOCK);
-                return;
-            }
-
             try {
                 const [agendamentosResp, salasResp] = await Promise.all([
                     agendamentoService.listar(),
@@ -82,8 +72,9 @@ export default function AgendamentosPage() {
                 setSalas(salasResp.dados);
             } catch (erro) {
                 if (!ativo) return;
-                setAgendamentos(AGENDAMENTOS_MOCK);
-                setSalas(SALAS_MOCK);
+                console.error('Erro ao carregar agendamentos:', erro);
+                setAgendamentos([]);
+                setSalas([]);
             }
         };
 
@@ -126,8 +117,6 @@ export default function AgendamentosPage() {
             estadoAtual.map((item) => (item.id === id ? { ...item, status } : item))
         );
 
-        if (usarMocks) return;
-
         try {
             await agendamentoService.atualizar(id, { status });
         } catch (erro) {
@@ -160,9 +149,7 @@ export default function AgendamentosPage() {
         setSalvandoSala(true);
 
         try {
-            if (!usarMocks) {
-                await agendamentoService.atualizarSala(salaSelecionada.id, payload);
-            }
+            await agendamentoService.atualizarSala(salaSelecionada.id, payload);
 
             setSalas((estadoAtual) =>
                 estadoAtual.map((sala) => (sala.id === salaSelecionada.id ? { ...sala, ...payload } : sala))
@@ -190,18 +177,8 @@ export default function AgendamentosPage() {
         setCriandoSala(true);
 
         try {
-            let novaSala = {
-                id: `sala-${Date.now()}`,
-                ativa: true,
-                ...payload,
-            };
-
-            if (!usarMocks) {
-                const resposta = await agendamentoService.criarSala(payload);
-                novaSala = resposta.dados;
-            }
-
-            setSalas((estadoAtual) => [novaSala, ...estadoAtual]);
+            const resposta = await agendamentoService.criarSala(payload);
+            setSalas((estadoAtual) => [resposta.dados, ...estadoAtual]);
         } catch (erro) {
             console.error('Erro ao criar sala:', erro);
         } finally {

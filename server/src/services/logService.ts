@@ -1,6 +1,4 @@
 import { Op } from 'sequelize';
-import { env } from '../config/env';
-import { mockLogs, mockUsuarios } from '../mocks/data';
 import { Log, User } from '../models';
 
 interface FiltroLog {
@@ -21,7 +19,7 @@ interface NovoLog {
     dataHora?: Date;
 }
 
-const mapLog = (log: Log | (typeof mockLogs)[number], cliente?: User | (typeof mockUsuarios)[number]) => ({
+const mapLog = (log: Log, cliente?: User) => ({
     id: log.id,
     clienteId: log.clienteId,
     clienteNome: cliente?.nome ?? 'Cliente',
@@ -32,19 +30,6 @@ const mapLog = (log: Log | (typeof mockLogs)[number], cliente?: User | (typeof m
 
 export const logService = {
     listar: async (filtros: FiltroLog = {}) => {
-        if (env.useMocks) {
-            return mockLogs
-                .filter((log) => (filtros.clienteId ? log.clienteId === filtros.clienteId : true))
-                .filter((log) =>
-                    filtros.tipoAtividade ? log.tipoAtividade === filtros.tipoAtividade : true
-                )
-                .filter((log) => (filtros.modulo ? log.modulo === filtros.modulo : true))
-                .map((log) => {
-                    const cliente = mockUsuarios.find((usuario) => usuario.id === log.clienteId);
-                    return mapLog(log, cliente);
-                });
-        }
-
         const where: Record<string, unknown> = {};
 
         if (filtros.clienteId) where.clienteId = filtros.clienteId;
@@ -69,21 +54,6 @@ export const logService = {
     },
     criar: async (dados: NovoLog) => {
         const dataHora = dados.dataHora ?? new Date();
-
-        if (env.useMocks) {
-            const novo = {
-                id: `log-${Date.now()}`,
-                clienteId: dados.clienteId,
-                tipoAtividade: dados.tipoAtividade,
-                modulo: dados.modulo,
-                descricao: dados.descricao ?? null,
-                ipOrigem: dados.ipOrigem ?? null,
-                userAgent: dados.userAgent ?? null,
-                dataHora: dataHora.toISOString(),
-            };
-            mockLogs.unshift(novo);
-            return;
-        }
 
         await Log.create({
             clienteId: dados.clienteId,

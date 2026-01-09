@@ -4,12 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { AdminLayout } from '@/components/layout';
 import { CampoBusca, CampoData } from '@/components/forms';
 import { EstadoVazio } from '@/components/ui/EstadoVazio';
-import { CLIENTES_MOCK } from '@/mocks';
 import { clienteService } from '@/services';
 import { formatarData, formatarEndereco } from '@/utils';
 import type { Cliente } from '@/types';
-
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
 
 export default function ClientesPage() {
     const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -20,12 +17,6 @@ export default function ClientesPage() {
         let ativo = true;
 
         const carregarDados = async () => {
-            if (usarMocks) {
-                if (!ativo) return;
-                setClientes(CLIENTES_MOCK);
-                return;
-            }
-
             try {
                 const clientesResp = await clienteService.listar();
 
@@ -33,7 +24,8 @@ export default function ClientesPage() {
                 setClientes(clientesResp.dados);
             } catch (erro) {
                 if (!ativo) return;
-                setClientes(CLIENTES_MOCK);
+                console.error('Erro ao carregar clientes:', erro);
+                setClientes([]);
             }
         };
 
@@ -68,8 +60,6 @@ export default function ClientesPage() {
                 cliente.id === id ? { ...cliente, ativo: !cliente.ativo } : cliente
             )
         );
-
-        if (usarMocks) return;
 
         const clienteAtual = clientes.find((cliente) => cliente.id === id);
         if (!clienteAtual) return;

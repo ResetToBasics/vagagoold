@@ -12,8 +12,6 @@ import { LogoVagaGoold } from '@/components/ui/Icones';
 import { authService } from '@/services';
 import { authStorage } from '@/utils';
 
-const usarMocks = process.env.NEXT_PUBLIC_USE_MOCKS !== 'false';
-
 /**
  * Página de Login do Cliente
  * 
@@ -49,17 +47,6 @@ export default function LoginClientePage() {
         setCarregando(true);
 
         try {
-            if (usarMocks) {
-                authStorage.salvarSessao('mock-token-cliente', {
-                    id: 'cli-001',
-                    nome: 'Camila Mendes',
-                    email,
-                    tipo: 'cliente',
-                });
-                router.push('/cliente/agendamentos');
-                return;
-            }
-
             const resposta = await authService.loginCliente({ email, senha });
             authStorage.salvarSessao(resposta.dados.token, resposta.dados.usuario);
             router.push('/cliente/agendamentos');
