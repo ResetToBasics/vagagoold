@@ -109,9 +109,22 @@ export const rejeitarAgendamento = asyncHandler(async (req: Request, res: Respon
     res.json(agendamento);
 });
 
-export const listarSalas = asyncHandler(async (_req: Request, res: Response) => {
-    const salas = await agendamentoService.listarSalas();
+export const listarSalas = asyncHandler(async (req: Request, res: Response) => {
+    const filtros = req.user?.role === 'cliente' ? { ativa: true } : {};
+    const salas = await agendamentoService.listarSalas(filtros);
     res.json(salas);
+});
+
+export const listarHorariosDisponiveis = asyncHandler(async (req: Request, res: Response) => {
+    const salaId = req.query.salaId as string | undefined;
+    const data = req.query.data as string | undefined;
+
+    if (!salaId || !data) {
+        throw new ApiError(400, 'salaId e data sao obrigatorios');
+    }
+
+    const horarios = await agendamentoService.listarHorariosDisponiveis({ salaId, data });
+    res.json(horarios);
 });
 
 export const criarSala = asyncHandler(async (req: Request, res: Response) => {

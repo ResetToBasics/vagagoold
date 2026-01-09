@@ -7,6 +7,7 @@ import {
     criarSala,
     criarAgendamento,
     listarAgendamentos,
+    listarHorariosDisponiveis,
     listarSalas,
     rejeitarAgendamento,
 } from '../controllers/agendamentoController';
@@ -15,6 +16,7 @@ import { requireAuth } from '../middlewares/auth';
 const router = Router();
 
 router.get('/salas', requireAuth(['admin', 'cliente']), listarSalas);
+router.get('/horarios', requireAuth(['admin', 'cliente']), listarHorariosDisponiveis);
 router.post('/salas', requireAuth(['admin']), criarSala);
 router.patch('/salas/:id', requireAuth(['admin']), atualizarSala);
 

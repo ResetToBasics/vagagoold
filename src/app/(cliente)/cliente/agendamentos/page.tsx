@@ -45,6 +45,8 @@ export default function AgendamentosClientePage() {
         horario: '',
         salaId: '',
     });
+    const [horariosDisponiveis, setHorariosDisponiveis] = useState<string[]>([]);
+    const [carregandoHorarios, setCarregandoHorarios] = useState(false);
     const [salvandoAgendamento, setSalvandoAgendamento] = useState(false);
     const [erroAgendamento, setErroAgendamento] = useState('');
     const [cancelandoId, setCancelandoId] = useState<string | null>(null);
@@ -82,6 +84,48 @@ export default function AgendamentosClientePage() {
             setErroAgendamento('');
         }
     }, [modal.aberto]);
+
+    useEffect(() => {
+        if (!modal.aberto) {
+            setHorariosDisponiveis([]);
+            return;
+        }
+
+        if (!novoAgendamento.data || !novoAgendamento.salaId) {
+            setHorariosDisponiveis([]);
+            setNovoAgendamento((estadoAtual) => ({ ...estadoAtual, horario: '' }));
+            return;
+        }
+
+        let ativo = true;
+        setCarregandoHorarios(true);
+
+        agendamentoService
+            .listarHorariosDisponiveis(novoAgendamento.salaId, novoAgendamento.data)
+            .then((resposta) => {
+                if (!ativo) return;
+                setHorariosDisponiveis(resposta.dados);
+
+                setNovoAgendamento((estadoAtual) => {
+                    if (estadoAtual.horario && resposta.dados.includes(estadoAtual.horario)) {
+                        return estadoAtual;
+                    }
+                    return { ...estadoAtual, horario: '' };
+                });
+            })
+            .catch((erro) => {
+                if (!ativo) return;
+                console.error('Erro ao carregar horarios:', erro);
+                setHorariosDisponiveis([]);
+            })
+            .finally(() => {
+                if (ativo) setCarregandoHorarios(false);
+            });
+
+        return () => {
+            ativo = false;
+        };
+    }, [modal.aberto, novoAgendamento.data, novoAgendamento.salaId]);
 
     const agendamentosFiltrados = useMemo(() => {
         const termo = busca.trim().toLowerCase();
@@ -304,24 +348,45 @@ export default function AgendamentosClientePage() {
                     }
                     icone={<IconeCalendario largura={18} altura={18} />}
                 />
-                <CampoTexto
-                    label={
-                        <>
-                            Selecione um <strong>horário</strong>{' '}
-                            <span className="modal-label-hint">(Obrigatório)</span>
-                        </>
-                    }
-                    placeholder="Selecione um horário"
-                    type="time"
-                    value={novoAgendamento.horario}
-                    onChange={(e) =>
-                        setNovoAgendamento((estadoAtual) => ({
-                            ...estadoAtual,
-                            horario: e.target.value,
-                        }))
-                    }
-                    icone={<IconeRelogio largura={18} altura={18} />}
-                />
+                <div className="modal-field">
+                    <label className="modal-label">
+                        Selecione um <strong>horário</strong>{' '}
+                        <span className="modal-label-hint">(Obrigatório)</span>
+                    </label>
+                    <div className="modal-select-wrapper">
+                        <select
+                            className="modal-select"
+                            value={novoAgendamento.horario}
+                            onChange={(e) =>
+                                setNovoAgendamento((estadoAtual) => ({
+                                    ...estadoAtual,
+                                    horario: e.target.value,
+                                }))
+                            }
+                            disabled={
+                                carregandoHorarios ||
+                                !novoAgendamento.data ||
+                                !novoAgendamento.salaId
+                            }
+                        >
+                            <option value="">
+                                {carregandoHorarios ? 'Carregando horários...' : 'Selecione um horário'}
+                            </option>
+                            {horariosDisponiveis.map((horario) => (
+                                <option key={horario} value={horario}>
+                                    {horario}
+                                </option>
+                            ))}
+                        </select>
+                        <IconeRelogio largura={18} altura={18} className="modal-select-icon" />
+                    </div>
+                    {!carregandoHorarios &&
+                        novoAgendamento.data &&
+                        novoAgendamento.salaId &&
+                        horariosDisponiveis.length === 0 && (
+                            <p className="modal-error">Nenhum horário disponível para esta data.</p>
+                        )}
+                </div>
                 <div className="modal-field">
                     <label className="modal-label">
                         Selecione uma <strong>Sala</strong>{' '}

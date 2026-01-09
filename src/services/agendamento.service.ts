@@ -113,6 +113,10 @@ export const agendamentoService = {
     listarSalas: async () => {
         return clienteHttp.get<SalaAgendamento[]>('/agendamentos/salas');
     },
+    listarHorariosDisponiveis: async (salaId: string, data: string) => {
+        const params = new URLSearchParams({ salaId, data });
+        return clienteHttp.get<string[]>(`/agendamentos/horarios?${params.toString()}`);
+    },
     criarSala: async (dados: CriarSalaAgendamentoDTO) => {
         return clienteHttp.post<SalaAgendamento>('/agendamentos/salas', dados);
     },

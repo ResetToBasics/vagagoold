@@ -51,6 +51,7 @@ export default function AgendamentosPage() {
     const [salas, setSalas] = useState<SalaAgendamento[]>([]);
     const [busca, setBusca] = useState('');
     const [dataFiltro, setDataFiltro] = useState('');
+    const [salaSelecionadaId, setSalaSelecionadaId] = useState('');
     const [nomeSala, setNomeSala] = useState('');
     const [horarioInicio, setHorarioInicio] = useState('');
     const [horarioFim, setHorarioFim] = useState('');
@@ -100,17 +101,31 @@ export default function AgendamentosPage() {
         });
     }, [agendamentos, busca, dataFiltro]);
 
-    const salaSelecionada = salas[0];
+    const salaSelecionada = useMemo(
+        () => salas.find((sala) => sala.id === salaSelecionadaId) ?? salas[0],
+        [salas, salaSelecionadaId]
+    );
 
     useEffect(() => {
         if (!modal.aberto) return;
-        if (!salaSelecionada) return;
+        if (!salaSelecionada && salas[0]) {
+            setSalaSelecionadaId(salas[0].id);
+            return;
+        }
+
+        if (!salaSelecionada) {
+            setNomeSala('');
+            setHorarioInicio('');
+            setHorarioFim('');
+            setDuracaoSala('30');
+            return;
+        }
 
         setNomeSala(salaSelecionada.nome);
         setHorarioInicio(salaSelecionada.horarioInicio);
         setHorarioFim(salaSelecionada.horarioFim);
         setDuracaoSala(String(salaSelecionada.duracaoBloco));
-    }, [modal.aberto, salaSelecionada]);
+    }, [modal.aberto, salaSelecionada, salas]);
 
     const atualizarStatus = async (id: string, status: StatusAgendamento) => {
         const statusAnterior = agendamentos.find((item) => item.id === id)?.status;
@@ -183,6 +198,7 @@ export default function AgendamentosPage() {
         try {
             const resposta = await agendamentoService.criarSala(payload);
             setSalas((estadoAtual) => [resposta.dados, ...estadoAtual]);
+            setSalaSelecionadaId(resposta.dados.id);
         } catch (erro) {
             console.error('Erro ao criar sala:', erro);
         } finally {
@@ -337,6 +353,14 @@ export default function AgendamentosPage() {
                     </button>
                 }
             >
+                {salas.length > 0 && (
+                    <Select
+                        label="Sala"
+                        opcoes={salas.map((sala) => ({ valor: sala.id, label: sala.nome }))}
+                        value={salaSelecionada?.id ?? ''}
+                        onChange={(e) => setSalaSelecionadaId(e.target.value)}
+                    />
+                )}
                 <CampoTexto
                     label="Nome da sala"
                     value={nomeSala}
