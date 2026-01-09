@@ -11,6 +11,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Login Admin | VagaGoold",
   description: "Tela de login administrativa",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
