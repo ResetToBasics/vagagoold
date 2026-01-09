@@ -271,6 +271,7 @@ export default function AgendamentosClientePage() {
                         </>
                     }
                     placeholder="Selecione uma data"
+                    type="date"
                     value={novoAgendamento.data}
                     onChange={(e) =>
                         setNovoAgendamento((estadoAtual) => ({
@@ -288,6 +289,7 @@ export default function AgendamentosClientePage() {
                         </>
                     }
                     placeholder="Selecione um horário"
+                    type="time"
                     value={novoAgendamento.horario}
                     onChange={(e) =>
                         setNovoAgendamento((estadoAtual) => ({

@@ -810,6 +810,19 @@ input:focus {
   background: #fff;
 }
 
+.modal-input[type="date"]::-webkit-calendar-picker-indicator,
+.modal-input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.modal-input[type="date"]::-webkit-inner-spin-button,
+.modal-input[type="date"]::-webkit-clear-button,
+.modal-input[type="time"]::-webkit-inner-spin-button,
+.modal-input[type="time"]::-webkit-clear-button {
+  display: none;
+}
+
 .modal-input:focus {
   border-color: #000;
 }
@@ -828,6 +841,7 @@ input:focus {
   top: 50%;
   transform: translateY(-50%);
   color: #666;
+  pointer-events: none;
 }
 
 .modal-select-wrapper {
