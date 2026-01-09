@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ClienteLayout, Modal } from '@/components/layout';
-import { CampoBusca, CampoData, CampoTexto, Select } from '@/components/forms';
+import { CampoBusca, CampoData, CampoTexto } from '@/components/forms';
 import { useModal } from '@/hooks';
 import { EstadoVazio } from '@/components/ui/EstadoVazio';
 import { IconeCalendario, IconeRelogio, IconeSetaBaixo } from '@/components/ui/Icones';
