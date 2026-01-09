@@ -48,6 +48,8 @@ export default function AgendamentosClientePage() {
         horario: '',
         salaId: '',
     });
+    const [salvandoAgendamento, setSalvandoAgendamento] = useState(false);
+    const [erroAgendamento, setErroAgendamento] = useState('');
 
     useEffect(() => {
         let ativo = true;
@@ -83,6 +85,12 @@ export default function AgendamentosClientePage() {
         };
     }, []);
 
+    useEffect(() => {
+        if (modal.aberto) {
+            setErroAgendamento('');
+        }
+    }, [modal.aberto]);
+
     const agendamentosFiltrados = useMemo(() => {
         const termo = busca.trim().toLowerCase();
         const dataSelecionada = dataFiltro.trim();
@@ -99,10 +107,9 @@ export default function AgendamentosClientePage() {
 
     const handleConfirmarAgendamento = async () => {
         if (!novoAgendamento.data || !novoAgendamento.horario || !novoAgendamento.salaId) {
+            setErroAgendamento('Preencha data, horário e sala.');
             return;
         }
-
-        modal.fechar();
 
         const dataHora = `${novoAgendamento.data}T${novoAgendamento.horario}:00`;
         const salaId = novoAgendamento.salaId;
@@ -111,7 +118,8 @@ export default function AgendamentosClientePage() {
         const clienteId = usuario?.id;
         const clienteNome = usuario?.nome ?? 'Cliente';
 
-        setNovoAgendamento({ data: '', horario: '', salaId: '' });
+        setSalvandoAgendamento(true);
+        setErroAgendamento('');
 
         if (usarMocks) {
             setAgendamentos((estadoAtual) => [
@@ -128,18 +136,34 @@ export default function AgendamentosClientePage() {
                 },
                 ...estadoAtual,
             ]);
+            setNovoAgendamento({ data: '', horario: '', salaId: '' });
+            setSalvandoAgendamento(false);
+            modal.fechar();
             return;
         }
 
         if (!clienteId) {
+            setErroAgendamento('Sessão expirada. Faça login novamente.');
+            setSalvandoAgendamento(false);
             return;
         }
 
-        await agendamentoService.criar({
-            dataHora,
-            clienteId,
-            salaId,
-        });
+        try {
+            const resposta = await agendamentoService.criar({
+                dataHora,
+                clienteId,
+                salaId,
+            });
+
+            setAgendamentos((estadoAtual) => [resposta.dados, ...estadoAtual]);
+            setNovoAgendamento({ data: '', horario: '', salaId: '' });
+            modal.fechar();
+        } catch (erro) {
+            console.error('Erro ao confirmar agendamento:', erro);
+            setErroAgendamento('Não foi possível confirmar o agendamento.');
+        } finally {
+            setSalvandoAgendamento(false);
+        }
     };
 
     const renderizarStatus = (status: StatusAgendamento) => (
@@ -259,8 +283,9 @@ export default function AgendamentosClientePage() {
                         className="modal-btn-save"
                         type="button"
                         onClick={handleConfirmarAgendamento}
+                        disabled={salvandoAgendamento}
                     >
-                        Confirmar Agendamento
+                        {salvandoAgendamento ? 'Confirmando...' : 'Confirmar Agendamento'}
                     </button>
                 }
             >
@@ -325,6 +350,7 @@ export default function AgendamentosClientePage() {
                         <IconeSetaBaixo largura={18} altura={18} className="modal-select-icon" />
                     </div>
                 </div>
+                {erroAgendamento && <p className="modal-error">{erroAgendamento}</p>}
             </Modal>
         </ClienteLayout>
     );

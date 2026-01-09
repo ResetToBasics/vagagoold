@@ -847,6 +847,12 @@ input:focus {
   color: #666;
 }
 
+.modal-error {
+  color: #b91c1c;
+  font-size: 13px;
+  margin: 0;
+}
+
 .modal-input {
   width: 100%;
   padding: 12px 14px;

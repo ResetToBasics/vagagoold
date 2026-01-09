@@ -11,6 +11,16 @@ interface FiltroLog {
     dataFim?: string;
 }
 
+interface NovoLog {
+    clienteId: string;
+    tipoAtividade: string;
+    modulo: string;
+    descricao?: string;
+    ipOrigem?: string;
+    userAgent?: string;
+    dataHora?: Date;
+}
+
 const mapLog = (log: Log | (typeof mockLogs)[number], cliente?: User | (typeof mockUsuarios)[number]) => ({
     id: log.id,
     clienteId: log.clienteId,
@@ -56,5 +66,33 @@ export const logService = {
         });
 
         return logs.map((log) => mapLog(log, log.get('cliente') as User));
+    },
+    criar: async (dados: NovoLog) => {
+        const dataHora = dados.dataHora ?? new Date();
+
+        if (env.useMocks) {
+            const novo = {
+                id: `log-${Date.now()}`,
+                clienteId: dados.clienteId,
+                tipoAtividade: dados.tipoAtividade,
+                modulo: dados.modulo,
+                descricao: dados.descricao ?? null,
+                ipOrigem: dados.ipOrigem ?? null,
+                userAgent: dados.userAgent ?? null,
+                dataHora: dataHora.toISOString(),
+            };
+            mockLogs.unshift(novo);
+            return;
+        }
+
+        await Log.create({
+            clienteId: dados.clienteId,
+            tipoAtividade: dados.tipoAtividade,
+            modulo: dados.modulo,
+            descricao: dados.descricao ?? null,
+            ipOrigem: dados.ipOrigem ?? null,
+            userAgent: dados.userAgent ?? null,
+            dataHora,
+        });
     },
 };

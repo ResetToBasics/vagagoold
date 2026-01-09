@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { agendamentoService } from '../services/agendamentoService';
+import { logService } from '../services/logService';
 import { ApiError, asyncHandler } from '../utils/http';
 
 export const listarAgendamentos = asyncHandler(async (req: Request, res: Response) => {
@@ -39,6 +40,22 @@ export const criarAgendamento = asyncHandler(async (req: Request, res: Response)
     }
 
     const agendamento = await agendamentoService.criar({ dataHora, clienteId, salaId });
+
+    if (req.user?.role === 'cliente' && req.user?.id) {
+        try {
+            await logService.criar({
+                clienteId: req.user.id,
+                tipoAtividade: 'criacao_agendamento',
+                modulo: 'agendamento',
+                descricao: `Agendamento criado para ${dataHora}`,
+                ipOrigem: req.ip,
+                userAgent: req.headers['user-agent'] as string | undefined,
+            });
+        } catch (erro) {
+            console.error('Erro ao registrar log de agendamento:', erro);
+        }
+    }
+
     res.status(201).json(agendamento);
 });
 
