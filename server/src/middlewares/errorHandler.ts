@@ -11,5 +11,6 @@ export const errorHandler = (
         return res.status(err.statusCode).json({ mensagem: err.message });
     }
 
+    console.error('Erro nao tratado:', err);
     return res.status(500).json({ mensagem: 'Erro inesperado' });
 };
