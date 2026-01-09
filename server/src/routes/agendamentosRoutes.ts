@@ -23,6 +23,6 @@ router.get('/:id', requireAuth(['admin', 'cliente']), buscarAgendamento);
 router.post('/', requireAuth(['admin', 'cliente']), criarAgendamento);
 router.patch('/:id', requireAuth(['admin']), atualizarAgendamento);
 router.patch('/:id/aprovar', requireAuth(['admin']), aprovarAgendamento);
-router.patch('/:id/rejeitar', requireAuth(['admin']), rejeitarAgendamento);
+router.patch('/:id/rejeitar', requireAuth(['admin', 'cliente']), rejeitarAgendamento);
 
 export default router;

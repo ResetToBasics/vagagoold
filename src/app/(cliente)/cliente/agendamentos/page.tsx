@@ -47,6 +47,7 @@ export default function AgendamentosClientePage() {
     });
     const [salvandoAgendamento, setSalvandoAgendamento] = useState(false);
     const [erroAgendamento, setErroAgendamento] = useState('');
+    const [cancelandoId, setCancelandoId] = useState<string | null>(null);
 
     useEffect(() => {
         let ativo = true;
@@ -134,12 +135,39 @@ export default function AgendamentosClientePage() {
         }
     };
 
+    const handleCancelarAgendamento = async (agendamento: Agendamento) => {
+        if (agendamento.status === 'cancelado') return;
+
+        const statusAnterior = agendamento.status;
+        setCancelandoId(agendamento.id);
+        setAgendamentos((estadoAtual) =>
+            estadoAtual.map((item) =>
+                item.id === agendamento.id ? { ...item, status: 'cancelado' } : item
+            )
+        );
+
+        try {
+            await agendamentoService.rejeitar(agendamento.id);
+        } catch (erro) {
+            console.error('Erro ao cancelar agendamento:', erro);
+            setAgendamentos((estadoAtual) =>
+                estadoAtual.map((item) =>
+                    item.id === agendamento.id ? { ...item, status: statusAnterior } : item
+                )
+            );
+        } finally {
+            setCancelandoId(null);
+        }
+    };
+
     const renderizarStatus = (status: StatusAgendamento) => (
         <span className={`admin-badge ${STATUS_ESTILOS[status].badge}`}>{STATUS_LABELS[status]}</span>
     );
 
-    const renderizarAcao = (status: StatusAgendamento) => {
-        if (status === 'cancelado') return null;
+    const renderizarAcao = (agendamento: Agendamento) => {
+        if (agendamento.status === 'cancelado') return null;
+
+        const desabilitado = cancelandoId === agendamento.id;
 
         return (
             <button
@@ -147,6 +175,8 @@ export default function AgendamentosClientePage() {
                 type="button"
                 aria-label="Cancelar agendamento"
                 title="Cancelar"
+                onClick={() => handleCancelarAgendamento(agendamento)}
+                disabled={desabilitado}
             >
                 <IconeX />
             </button>
@@ -218,7 +248,7 @@ export default function AgendamentosClientePage() {
                                         </td>
                                         <td className="admin-text-right">
                                             <div className="admin-actions">
-                                                {renderizarAcao(agendamento.status)}
+                                                {renderizarAcao(agendamento)}
                                             </div>
                                         </td>
                                     </tr>

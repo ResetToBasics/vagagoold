@@ -113,6 +113,7 @@ export default function MinhaContaClientePage() {
             const resposta = await clienteService.atualizarMe({
                 nome: nomeCompleto,
                 email: dados.email,
+                senha: dados.senha.trim() ? dados.senha : undefined,
                 endereco: {
                     logradouro: dados.endereco,
                     numero: dados.numero,
@@ -126,6 +127,7 @@ export default function MinhaContaClientePage() {
 
             setNomeSidebar(resposta.dados.nome);
             authStorage.atualizarUsuario({ nome: resposta.dados.nome, email: resposta.dados.email });
+            setDados((estadoAtual) => ({ ...estadoAtual, senha: '' }));
         } catch (erro) {
             console.error('Erro ao atualizar dados:', erro);
         } finally {

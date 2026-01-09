@@ -42,6 +42,13 @@ export const clienteService = {
         const usuario = await User.findByPk(id);
         if (!usuario) throw new ApiError(404, 'Cliente nao encontrado');
 
+        if (dados.email && dados.email !== usuario.email) {
+            const existente = await User.findOne({ where: { email: dados.email } });
+            if (existente) {
+                throw new ApiError(409, 'Email ja cadastrado');
+            }
+        }
+
         await usuario.update(dados);
         return mapCliente(usuario);
     },

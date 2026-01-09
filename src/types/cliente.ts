@@ -66,6 +66,7 @@ export interface CriarClienteDTO {
 export interface AtualizarClienteDTO {
     nome?: string;
     email?: string;
+    senha?: string;
     endereco?: Partial<EnderecoCliente>;
     permissoes?: PermissaoCliente[];
     ativo?: boolean;

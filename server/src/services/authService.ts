@@ -21,6 +21,10 @@ export const authService = {
             throw new ApiError(401, 'Credenciais invalidas');
         }
 
+        if (!usuario.ativo) {
+            throw new ApiError(403, 'Usuario inativo');
+        }
+
         const senhaValida = await bcrypt.compare(senha, usuario.senhaHash);
         if (!senhaValida) {
             throw new ApiError(401, 'Credenciais invalidas');

@@ -82,7 +82,30 @@ export const rejeitarAgendamento = asyncHandler(async (req: Request, res: Respon
     const { id } = req.params;
     if (!id) throw new ApiError(400, 'Id do agendamento nao informado');
 
+    if (req.user?.role === 'cliente') {
+        const agendamentoAtual = await agendamentoService.buscarPorId(id);
+        if (agendamentoAtual.clienteId !== req.user.id) {
+            throw new ApiError(403, 'Acesso negado');
+        }
+    }
+
     const agendamento = await agendamentoService.atualizar(id, { status: 'cancelado' });
+
+    if (req.user?.role === 'cliente' && req.user?.id) {
+        try {
+            await logService.criar({
+                clienteId: req.user.id,
+                tipoAtividade: 'cancelamento_agendamento',
+                modulo: 'agendamento',
+                descricao: `Agendamento cancelado ${id}`,
+                ipOrigem: req.ip,
+                userAgent: req.headers['user-agent'] as string | undefined,
+            });
+        } catch (erro) {
+            console.error('Erro ao registrar log de cancelamento:', erro);
+        }
+    }
+
     res.json(agendamento);
 });
 
