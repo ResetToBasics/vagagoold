@@ -5,11 +5,12 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LogoVagaGoold, IconeCalendario, IconeUsuarios, IconeLista, IconeSetaBaixo } from '../ui/Icones';
 import { MENU_ADMIN, USUARIO_ADMIN } from '@/constants';
+import { authStorage } from '@/utils';
 
 /**
  * Componente Sidebar para navegação do painel administrativo
@@ -23,6 +24,9 @@ import { MENU_ADMIN, USUARIO_ADMIN } from '@/constants';
 export function Sidebar() {
     // Hook para obter a rota atual e destacar o item ativo
     const pathname = usePathname();
+    const router = useRouter();
+    const profileRef = useRef<HTMLDivElement | null>(null);
+    const [menuAberto, setMenuAberto] = useState(false);
 
     /**
      * Renderiza o ícone correto baseado no tipo
@@ -44,6 +48,36 @@ export function Sidebar() {
      * Verifica se o item está ativo baseado na rota atual
      */
     const estaAtivo = (href: string) => pathname === href;
+
+    const handleLogout = () => {
+        authStorage.limparSessao();
+        setMenuAberto(false);
+        router.push('/admin/login');
+    };
+
+    useEffect(() => {
+        if (!menuAberto) return;
+
+        const handleClickFora = (event: MouseEvent) => {
+            if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+                setMenuAberto(false);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setMenuAberto(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickFora);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickFora);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [menuAberto]);
 
     return (
         <aside className="admin-sidebar">
@@ -72,12 +106,27 @@ export function Sidebar() {
             </nav>
 
             {/* Perfil do usuário */}
-            <div className="admin-profile">
-                <div className="admin-user-info">
-                    <h4>{USUARIO_ADMIN.nome}</h4>
-                    <p>{USUARIO_ADMIN.cargo}</p>
-                </div>
-                <IconeSetaBaixo />
+            <div className="admin-profile" ref={profileRef}>
+                <button
+                    type="button"
+                    className="admin-profile-trigger"
+                    onClick={() => setMenuAberto((estadoAtual) => !estadoAtual)}
+                    aria-expanded={menuAberto}
+                    aria-haspopup="menu"
+                >
+                    <div className="admin-user-info">
+                        <h4>{USUARIO_ADMIN.nome}</h4>
+                        <p>{USUARIO_ADMIN.cargo}</p>
+                    </div>
+                    <IconeSetaBaixo className={`admin-profile-chevron${menuAberto ? ' admin-profile-chevron--open' : ''}`} />
+                </button>
+                {menuAberto && (
+                    <div className="admin-profile-menu" role="menu">
+                        <button type="button" className="admin-profile-logout" onClick={handleLogout} role="menuitem">
+                            Sair
+                        </button>
+                    </div>
+                )}
             </div>
         </aside>
     );

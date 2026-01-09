@@ -5,10 +5,11 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LogoVagaGoold, IconeCalendario, IconeLista, IconeUsuario, IconeSetaBaixo } from '../ui/Icones';
+import { authStorage } from '@/utils';
 
 /**
  * Itens de navegação do menu do cliente
@@ -47,6 +48,9 @@ interface SidebarClienteProps {
  */
 export function SidebarCliente({ nomeCliente = 'Camila Mendes' }: SidebarClienteProps) {
     const pathname = usePathname();
+    const router = useRouter();
+    const profileRef = useRef<HTMLDivElement | null>(null);
+    const [menuAberto, setMenuAberto] = useState(false);
 
     /**
      * Renderiza o ícone correto baseado no tipo
@@ -68,6 +72,36 @@ export function SidebarCliente({ nomeCliente = 'Camila Mendes' }: SidebarCliente
      * Verifica se o item está ativo baseado na rota atual
      */
     const estaAtivo = (href: string) => pathname?.includes(href);
+
+    const handleLogout = () => {
+        authStorage.limparSessao();
+        setMenuAberto(false);
+        router.push('/login');
+    };
+
+    useEffect(() => {
+        if (!menuAberto) return;
+
+        const handleClickFora = (event: MouseEvent) => {
+            if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+                setMenuAberto(false);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setMenuAberto(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickFora);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickFora);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [menuAberto]);
 
     return (
         <aside className="admin-sidebar">
@@ -96,12 +130,27 @@ export function SidebarCliente({ nomeCliente = 'Camila Mendes' }: SidebarCliente
             </nav>
 
             {/* Perfil do cliente */}
-            <div className="admin-profile">
-                <div className="admin-user-info">
-                    <h4>{nomeCliente}</h4>
-                    <p>Cliente</p>
-                </div>
-                <IconeSetaBaixo />
+            <div className="admin-profile" ref={profileRef}>
+                <button
+                    type="button"
+                    className="admin-profile-trigger"
+                    onClick={() => setMenuAberto((estadoAtual) => !estadoAtual)}
+                    aria-expanded={menuAberto}
+                    aria-haspopup="menu"
+                >
+                    <div className="admin-user-info">
+                        <h4>{nomeCliente}</h4>
+                        <p>Cliente</p>
+                    </div>
+                    <IconeSetaBaixo className={`admin-profile-chevron${menuAberto ? ' admin-profile-chevron--open' : ''}`} />
+                </button>
+                {menuAberto && (
+                    <div className="admin-profile-menu" role="menu">
+                        <button type="button" className="admin-profile-logout" onClick={handleLogout} role="menuitem">
+                            Sair
+                        </button>
+                    </div>
+                )}
             </div>
         </aside>
     );
