@@ -253,6 +253,7 @@ export default function AgendamentosClientePage() {
                 aberto={modal.aberto}
                 onFechar={modal.fechar}
                 titulo="Novo Agendamento"
+                className="modal--agendamento"
                 rodape={
                     <button
                         className="modal-btn-save"

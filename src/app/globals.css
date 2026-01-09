@@ -733,6 +733,20 @@ input:focus {
   animation: modal-in 0.2s ease-out;
 }
 
+.modal--agendamento {
+  max-width: 375px;
+  height: 500px;
+  border-radius: 5px;
+  border: 1px solid #d7d7d7;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal--agendamento .modal-body {
+  flex: 1;
+  overflow: auto;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -948,8 +962,8 @@ input:focus {
 .cliente-header {
   background-color: #F6F4F1;
   border-bottom: 1px solid #D7D7D7;
-  padding: 0 24px;
-  height: 56px;
+  padding: 20px 100px;
+  height: 84px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -959,11 +973,12 @@ input:focus {
 
 .cliente-header-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .cliente-btn-outline {
@@ -994,6 +1009,9 @@ input:focus {
 .cliente-login-container {
   width: 100%;
   max-width: 448px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 
 .cliente-login-titulo {
@@ -1004,12 +1022,17 @@ input:focus {
   color: #111;
 }
 
+.cliente-login-container .cliente-login-titulo {
+  margin-bottom: 0;
+}
+
 .cliente-login-card {
   background: #fff;
   border: 1px solid #dcdcdc;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  width: 100%;
 }
 
 /* Formulário de Login */
