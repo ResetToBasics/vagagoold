@@ -52,7 +52,8 @@ export default function AgendamentosPage() {
     const [busca, setBusca] = useState('');
     const [dataFiltro, setDataFiltro] = useState('');
     const [nomeSala, setNomeSala] = useState('');
-    const [horarioSala, setHorarioSala] = useState('');
+    const [horarioInicio, setHorarioInicio] = useState('');
+    const [horarioFim, setHorarioFim] = useState('');
     const [duracaoSala, setDuracaoSala] = useState('30');
     const [salvandoSala, setSalvandoSala] = useState(false);
     const [criandoSala, setCriandoSala] = useState(false);
@@ -106,7 +107,8 @@ export default function AgendamentosPage() {
         if (!salaSelecionada) return;
 
         setNomeSala(salaSelecionada.nome);
-        setHorarioSala(`${salaSelecionada.horarioInicio} - ${salaSelecionada.horarioFim}`);
+        setHorarioInicio(salaSelecionada.horarioInicio);
+        setHorarioFim(salaSelecionada.horarioFim);
         setDuracaoSala(String(salaSelecionada.duracaoBloco));
     }, [modal.aberto, salaSelecionada]);
 
@@ -136,7 +138,8 @@ export default function AgendamentosPage() {
             return;
         }
 
-        const [inicio, fim] = horarioSala.split('-').map((valor) => valor.trim());
+        const inicio = horarioInicio.trim();
+        const fim = horarioFim.trim();
         if (!inicio || !fim) return;
 
         const payload = {
@@ -164,7 +167,8 @@ export default function AgendamentosPage() {
     };
 
     const handleAdicionarSala = async () => {
-        const [inicio, fim] = horarioSala.split('-').map((valor) => valor.trim());
+        const inicio = horarioInicio.trim();
+        const fim = horarioFim.trim();
         if (!nomeSala.trim() || !inicio || !fim) return;
 
         const payload = {
@@ -338,12 +342,29 @@ export default function AgendamentosPage() {
                     value={nomeSala}
                     onChange={(e) => setNomeSala(e.target.value)}
                 />
-                <CampoTexto
-                    label="Horário Inicial & Final da sala"
-                    value={horarioSala}
-                    onChange={(e) => setHorarioSala(e.target.value)}
-                    icone={<IconeRelogio largura={18} altura={18} />}
-                />
+                <div className="modal-field">
+                    <label className="modal-label">Horário Inicial & Final da sala</label>
+                    <div className="modal-time-range">
+                        <input
+                            className="modal-input modal-time-input"
+                            type="time"
+                            value={horarioInicio}
+                            onChange={(e) => setHorarioInicio(e.target.value)}
+                        />
+                        <span className="modal-time-separator">-</span>
+                        <div className="modal-input-wrapper modal-time-input">
+                            <input
+                                className="modal-input"
+                                type="time"
+                                value={horarioFim}
+                                onChange={(e) => setHorarioFim(e.target.value)}
+                            />
+                            <span className="modal-input-icon">
+                                <IconeRelogio largura={18} altura={18} />
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 <Select
                     label="Bloco de Horários de agendamento"
                     opcoes={OPCOES_DURACAO_BLOCO.map((opcao) => ({

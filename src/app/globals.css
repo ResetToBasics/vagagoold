@@ -899,6 +899,22 @@ input:focus {
   pointer-events: none;
 }
 
+.modal-time-range {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-time-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-time-separator {
+  color: #999;
+  font-weight: 600;
+}
+
 .modal-select-wrapper {
   position: relative;
 }
