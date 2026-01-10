@@ -1,6 +1,50 @@
 # VagaGoold - Sistema de Agendamentos
 
+## ✅ Requisitos
 
+- Node.js 18+
+- MySQL 8
+
+## ⚙️ Variáveis de ambiente
+
+Copie `.env.example` para `.env` e ajuste os valores:
+
+- `NEXT_PUBLIC_API_URL`: URL base da API usada pelo frontend (`/api` em produção via proxy).
+- `API_PROXY_TARGET`: destino real da API quando usar `/api` (ex: `http://localhost:3001`).
+- `PORT`: porta do backend.
+- `JWT_SECRET`: segredo do JWT.
+- `CORS_ORIGIN`: origem permitida (ex: `http://localhost:3000`).
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_LOGGING`.
+
+## ▶️ Rodando localmente
+
+Frontend:
+```bash
+npm install
+npm run dev
+```
+
+Backend (em outro terminal):
+```bash
+npm run dev:server
+```
+
+Acesse:
+- Frontend: `http://localhost:3000`
+- API: `http://localhost:3001`
+
+## 📦 Build/produção (local)
+
+```bash
+npm run build
+npm run build:server
+```
+
+Depois:
+```bash
+npm run start
+npm run start:server
+```
 
 ## 📁 Estrutura do Projeto
 
