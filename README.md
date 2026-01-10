@@ -46,6 +46,12 @@ npm run start
 npm run start:server
 ```
 
+## 📲 PWA
+
+- Manifesto: `public/manifest.webmanifest`
+- Service Worker: `public/sw.js` (cache básico + fallback em `/offline`)
+- Ícones: `public/icons/icon-192.png`, `public/icons/icon-512.png`, `public/apple-touch-icon.png`
+
 ## 📁 Estrutura do Projeto
 
 ```
