@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { LogoVagaGoold } from '@/components/ui/Icones';
+import { IconeOlhoSenha, LogoVagaGoold } from '@/components/ui/Icones';
 import { authService } from '@/services';
 import { authStorage } from '@/utils';
 
@@ -80,7 +80,7 @@ export default function LoginAdminPage() {
                                         onClick={() => setMostrarSenha(!mostrarSenha)}
                                         aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
                                     >
-                                        {mostrarSenha ? '👁' : '👁‍🗨'}
+                                        <IconeOlhoSenha />
                                     </button>
                                 </div>
                             </div>
