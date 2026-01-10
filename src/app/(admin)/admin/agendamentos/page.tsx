@@ -55,6 +55,7 @@ export default function AgendamentosPage() {
     const [nomeSala, setNomeSala] = useState('');
     const [horarioInicio, setHorarioInicio] = useState('');
     const [horarioFim, setHorarioFim] = useState('');
+    const [horarioRange, setHorarioRange] = useState('');
     const [duracaoSala, setDuracaoSala] = useState('30');
     const [salvandoSala, setSalvandoSala] = useState(false);
     const [criandoSala, setCriandoSala] = useState(false);
@@ -117,6 +118,7 @@ export default function AgendamentosPage() {
             setNomeSala('');
             setHorarioInicio('');
             setHorarioFim('');
+            setHorarioRange('');
             setDuracaoSala('30');
             return;
         }
@@ -124,8 +126,26 @@ export default function AgendamentosPage() {
         setNomeSala(salaSelecionada.nome);
         setHorarioInicio(salaSelecionada.horarioInicio);
         setHorarioFim(salaSelecionada.horarioFim);
+        setHorarioRange(`${salaSelecionada.horarioInicio} - ${salaSelecionada.horarioFim}`);
         setDuracaoSala(String(salaSelecionada.duracaoBloco));
     }, [modal.aberto, salaSelecionada, salas]);
+
+    const handleHorarioRangeChange = (valor: string) => {
+        setHorarioRange(valor);
+        const texto = valor.trim();
+
+        if (!texto) {
+            setHorarioInicio('');
+            setHorarioFim('');
+            return;
+        }
+
+        const match = texto.match(/^(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})$/);
+        if (match) {
+            setHorarioInicio(match[1]);
+            setHorarioFim(match[2]);
+        }
+    };
 
     const atualizarStatus = async (id: string, status: StatusAgendamento) => {
         const statusAnterior = agendamentos.find((item) => item.id === id)?.status;
@@ -368,25 +388,17 @@ export default function AgendamentosPage() {
                 />
                 <div className="modal-field">
                     <label className="modal-label">Horário Inicial & Final da sala</label>
-                    <div className="modal-time-range">
+                    <div className="modal-input-wrapper">
                         <input
-                            className="modal-input modal-time-input"
-                            type="time"
-                            value={horarioInicio}
-                            onChange={(e) => setHorarioInicio(e.target.value)}
+                            className="modal-input"
+                            type="text"
+                            placeholder="08:00 - 18:00"
+                            value={horarioRange}
+                            onChange={(e) => handleHorarioRangeChange(e.target.value)}
                         />
-                        <span className="modal-time-separator">-</span>
-                        <div className="modal-input-wrapper modal-time-input">
-                            <input
-                                className="modal-input"
-                                type="time"
-                                value={horarioFim}
-                                onChange={(e) => setHorarioFim(e.target.value)}
-                            />
-                            <span className="modal-input-icon">
-                                <IconeRelogio largura={18} altura={18} />
-                            </span>
-                        </div>
+                        <span className="modal-input-icon">
+                            <IconeRelogio largura={18} altura={18} />
+                        </span>
                     </div>
                 </div>
                 <Select

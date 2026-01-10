@@ -955,11 +955,15 @@ input:focus {
   font-weight: 600;
   color: var(--admin-text-primary);
   cursor: pointer;
-  padding: 16px 0 8px;
-  margin: 4px 0 0;
   width: 100%;
   text-align: left;
   border-top: 1px solid #e5e5e5;
+  padding: 0;
+  margin-top: 8px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .modal-add-room:hover {
