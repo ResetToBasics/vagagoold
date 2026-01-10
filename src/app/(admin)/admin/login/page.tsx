@@ -42,7 +42,7 @@ export default function LoginAdminPage() {
         <div className="admin-login-page">
             <main className="admin-login-main">
                 <div className="admin-login-panel">
-                    <LogoVagaGoold largura={48} altura={48} className="admin-login-logo" />
+                    <LogoVagaGoold largura={58} altura={58} className="admin-login-logo" />
                     <h1 className="admin-login-title">Login Admin</h1>
 
                     <div className="admin-login-card">

@@ -1305,7 +1305,9 @@ input:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 30px;
+  width: 448px;
+  max-width: 100%;
 }
 
 .admin-login-card {
@@ -1313,7 +1315,7 @@ input:focus {
   max-width: 100%;
   border: 1px solid #e5e5e5;
   border-radius: 12px;
-  padding: 24px;
+  padding: 30px;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -1323,13 +1325,14 @@ input:focus {
 }
 
 .admin-login-logo {
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
 .admin-login-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 28px;
   font-weight: 600;
+  line-height: 50px;
   color: #111;
 }
 
@@ -1337,7 +1340,7 @@ input:focus {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 15px;
 }
 
 .admin-login-field .cliente-label {
