@@ -144,7 +144,7 @@ export const agendamentoService = {
     criar: async (dados: { dataHora: string; clienteId: string; salaId: string }) => {
         const cliente = await User.findByPk(dados.clienteId);
         if (!cliente || cliente.role !== 'cliente') {
-            throw new ApiError(404, 'Cliente nao encontrado');
+            throw new ApiError(401, 'Sessao invalida, faca login novamente');
         }
         if (!cliente.ativo) {
             throw new ApiError(403, 'Cliente inativo');
