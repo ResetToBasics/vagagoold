@@ -29,8 +29,7 @@ export default function LoginAdminPage() {
 
         try {
             const resposta = await authService.loginAdmin({ email, senha });
-            authStorage.salvarSessao(resposta.dados.token, resposta.dados.usuario);
-            document.cookie = 'admin_session=true; path=/; max-age=86400';
+            authStorage.salvarSessao(resposta.dados.usuario);
             window.location.href = '/admin/agendamentos';
         } catch (erro) {
             console.error('Erro no login admin:', erro);

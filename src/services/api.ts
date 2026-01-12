@@ -56,8 +56,7 @@ async function requisicaoHttp<T>(
     config: ConfiguracaoRequisicao = {}
 ): Promise<RespostaApi<T>> {
     const { corpo, headers = {}, token } = config;
-    const tokenLocal =
-        token || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') || undefined : undefined);
+    const tokenLocal = token;
 
     // Monta os headers da requisição
     const headersFinais: Record<string, string> = {

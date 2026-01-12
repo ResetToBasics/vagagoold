@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LogoVagaGoold, IconeCalendario, IconeUsuarios, IconeLista, IconeSetaBaixo } from '../ui/Icones';
 import { MENU_ADMIN } from '@/constants';
+import { authService } from '@/services';
 import { authStorage } from '@/utils';
 
 /**
@@ -51,10 +52,16 @@ export function Sidebar() {
      */
     const estaAtivo = (href: string) => pathname === href;
 
-    const handleLogout = () => {
-        authStorage.limparSessao();
-        setMenuAberto(false);
-        router.push('/admin/login');
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+        } catch (erro) {
+            console.error('Erro ao encerrar sessao:', erro);
+        } finally {
+            authStorage.limparSessao();
+            setMenuAberto(false);
+            router.push('/admin/login');
+        }
     };
 
     useEffect(() => {

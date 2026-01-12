@@ -48,7 +48,7 @@ export default function LoginClientePage() {
 
         try {
             const resposta = await authService.loginCliente({ email, senha });
-            authStorage.salvarSessao(resposta.dados.token, resposta.dados.usuario);
+            authStorage.salvarSessao(resposta.dados.usuario);
             router.push('/cliente/agendamentos');
         } catch (erro) {
             console.error('Erro no login:', erro);

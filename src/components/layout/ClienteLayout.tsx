@@ -42,11 +42,11 @@ export function ClienteLayout({ children, titulo, subtitulo, nomeCliente }: Clie
     }, [nomeCliente]);
 
     return (
-        <div className="admin-page">
+        <div className="cliente-dashboard">
             <SidebarCliente nomeCliente={nomeExibido} />
 
-            <main className="admin-content">
-                <header className="admin-page-header">
+            <main className="cliente-content">
+                <header className="cliente-page-header">
                     <h1>{titulo}</h1>
                     {subtitulo && <p>{subtitulo}</p>}
                 </header>

@@ -4,15 +4,13 @@
 
 import type { UsuarioAutenticado } from '@/types';
 
-const CHAVE_TOKEN = 'auth_token';
 const CHAVE_USUARIO = 'auth_user';
 
 const podeUsarStorage = typeof window !== 'undefined';
 
 export const authStorage = {
-    salvarSessao: (token: string, usuario: UsuarioAutenticado) => {
+    salvarSessao: (usuario: UsuarioAutenticado) => {
         if (!podeUsarStorage) return;
-        localStorage.setItem(CHAVE_TOKEN, token);
         localStorage.setItem(CHAVE_USUARIO, JSON.stringify(usuario));
     },
     atualizarUsuario: (dados: Partial<UsuarioAutenticado>) => {
@@ -34,7 +32,6 @@ export const authStorage = {
     },
     limparSessao: () => {
         if (!podeUsarStorage) return;
-        localStorage.removeItem(CHAVE_TOKEN);
         localStorage.removeItem(CHAVE_USUARIO);
     },
 };

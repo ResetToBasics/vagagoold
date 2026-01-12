@@ -12,9 +12,11 @@ Copie `.env.example` para `.env` e ajuste os valores:
 - `NEXT_PUBLIC_API_URL`: URL base da API usada pelo frontend (`/api` em produção via proxy).
 - `API_PROXY_TARGET`: destino real da API quando usar `/api` (ex: `http://localhost:3001`).
 - `PORT`: porta do backend.
-- `JWT_SECRET`: segredo do JWT.
+- `JWT_SECRET`: segredo do JWT (obrigatorio em producao).
 - `CORS_ORIGIN`: origem permitida (ex: `http://localhost:3000`).
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_LOGGING`.
+- `DB_SYNC`: `true` para sincronizar models automaticamente (apenas dev).
+- `DB_SEED`: `true` para popular dados iniciais (apenas dev).
 
 ## ▶️ Rodando localmente
 
@@ -44,6 +46,12 @@ Depois:
 ```bash
 npm run start
 npm run start:server
+```
+
+## ✅ Testes
+
+```bash
+npm test
 ```
 
 ## 📲 PWA

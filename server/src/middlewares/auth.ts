@@ -11,13 +11,12 @@ interface TokenPayload {
 export const requireAuth = (roles?: string[]) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         const header = req.headers.authorization;
-        if (!header) {
-            return next(new ApiError(401, 'Token nao informado'));
-        }
+        const tokenHeader = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
+        const tokenCookie = extrairTokenCookie(req.headers.cookie);
+        const token = tokenHeader || tokenCookie;
 
-        const [, token] = header.split(' ');
         if (!token) {
-            return next(new ApiError(401, 'Token invalido'));
+            return next(new ApiError(401, 'Token nao informado'));
         }
 
         try {
@@ -33,4 +32,12 @@ export const requireAuth = (roles?: string[]) => {
             return next(new ApiError(401, 'Token expirado ou invalido'));
         }
     };
+};
+
+const extrairTokenCookie = (cookieHeader?: string) => {
+    if (!cookieHeader) return undefined;
+    const partes = cookieHeader.split(';').map((parte) => parte.trim());
+    const alvo = partes.find((parte) => parte.startsWith('auth_token='));
+    if (!alvo) return undefined;
+    return decodeURIComponent(alvo.replace('auth_token=', ''));
 };

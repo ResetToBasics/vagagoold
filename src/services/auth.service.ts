@@ -13,4 +13,7 @@ export const authService = {
     loginCliente: async (credenciais: LoginRequest) => {
         return clienteHttp.post<LoginResponse>('/auth/cliente/login', credenciais);
     },
+    logout: async () => {
+        return clienteHttp.post<{ sucesso: boolean }>('/auth/logout', {});
+    },
 };

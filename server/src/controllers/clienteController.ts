@@ -1,8 +1,36 @@
 import type { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 import { clienteService } from '../services/clienteService';
 import { logService } from '../services/logService';
 import { ApiError, asyncHandler } from '../utils/http';
+import { validarSchema } from '../utils/validation';
+
+const enderecoSchema = z.object({
+    logradouro: z.string().min(1, 'Logradouro obrigatorio'),
+    numero: z.string().min(1, 'Numero obrigatorio'),
+    complemento: z.string().optional(),
+    bairro: z.string().min(1, 'Bairro obrigatorio'),
+    cidade: z.string().min(1, 'Cidade obrigatoria'),
+    estado: z.string().min(1, 'Estado obrigatorio'),
+    cep: z.string().min(1, 'CEP obrigatorio'),
+});
+
+const criarClienteSchema = z.object({
+    nome: z.string().min(2, 'Nome obrigatorio'),
+    email: z.string().email('Email invalido'),
+    senha: z.string().min(6, 'Senha precisa ter pelo menos 6 caracteres'),
+    endereco: enderecoSchema,
+});
+
+const atualizarClienteSchema = z.object({
+    nome: z.string().min(2).optional(),
+    email: z.string().email().optional(),
+    endereco: enderecoSchema.partial().optional(),
+    senha: z.string().min(6).optional(),
+    permissoes: z.array(z.string()).optional(),
+    ativo: z.boolean().optional(),
+});
 
 export const listarClientes = asyncHandler(async (_req: Request, res: Response) => {
     const clientes = await clienteService.listar();
@@ -27,7 +55,7 @@ export const atualizarCliente = asyncHandler(async (req: Request, res: Response)
         throw new ApiError(400, 'Id do cliente nao informado');
     }
 
-    const { nome, email, endereco, permissoes, ativo } = req.body;
+    const { nome, email, endereco, permissoes, ativo } = validarSchema(atualizarClienteSchema, req.body);
     const dadosAtualizacao: Record<string, unknown> = {};
 
     if (nome !== undefined) dadosAtualizacao.nome = nome;
@@ -52,7 +80,7 @@ export const atualizarClienteLogado = asyncHandler(async (req: Request, res: Res
     const usuarioId = req.user?.id;
     if (!usuarioId) throw new ApiError(401, 'Usuario nao autenticado');
 
-    const { nome, email, endereco, senha } = req.body;
+    const { nome, email, endereco, senha } = validarSchema(atualizarClienteSchema, req.body);
     const dadosAtualizacao: Record<string, unknown> = {};
 
     if (nome !== undefined) dadosAtualizacao.nome = nome;
@@ -100,12 +128,7 @@ export const atualizarClienteLogado = asyncHandler(async (req: Request, res: Res
 });
 
 export const criarCliente = asyncHandler(async (req: Request, res: Response) => {
-    const { nome, email, senha, endereco } = req.body;
-
-    if (!nome || !email || !senha || !endereco) {
-        throw new ApiError(400, 'Dados obrigatorios nao informados');
-    }
-
+    const { nome, email, senha, endereco } = validarSchema(criarClienteSchema, req.body);
     const cliente = await clienteService.criar({ nome, email, senha, endereco });
     res.status(201).json(cliente);
 });

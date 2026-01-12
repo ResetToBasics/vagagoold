@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LogoVagaGoold, IconeCalendario, IconeLista, IconeUsuario, IconeSetaBaixo } from '../ui/Icones';
+import { authService } from '@/services';
 import { authStorage } from '@/utils';
 
 /**
@@ -74,10 +75,16 @@ export function SidebarCliente({ nomeCliente = 'Camila Mendes' }: SidebarCliente
      */
     const estaAtivo = (href: string) => pathname?.includes(href);
 
-    const handleLogout = () => {
-        authStorage.limparSessao();
-        setMenuAberto(false);
-        router.push('/login');
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+        } catch (erro) {
+            console.error('Erro ao encerrar sessao:', erro);
+        } finally {
+            authStorage.limparSessao();
+            setMenuAberto(false);
+            router.push('/login');
+        }
     };
 
     useEffect(() => {

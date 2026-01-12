@@ -6,8 +6,12 @@ import { seedDatabase } from './seed';
 
 const iniciarServidor = async () => {
     await sequelize.authenticate();
-    await sequelize.sync();
-    await seedDatabase();
+    if (env.db.sync) {
+        await sequelize.sync();
+    }
+    if (env.db.seed) {
+        await seedDatabase();
+    }
 
     app.listen(env.port, () => {
         console.log(`Servidor rodando na porta ${env.port}`);

@@ -1066,6 +1066,10 @@ input:focus {
     flex-direction: column;
   }
 
+  .cliente-dashboard {
+    flex-direction: column;
+  }
+
   .admin-sidebar {
     position: static;
     width: 100%;
@@ -1078,6 +1082,12 @@ input:focus {
   }
 
   .admin-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 24px;
+  }
+
+  .cliente-content {
     margin-left: 0;
     width: 100%;
     padding: 24px;
@@ -1101,6 +1111,39 @@ input:focus {
   background-color: #F6F4F1;
   display: flex;
   flex-direction: column;
+}
+
+.cliente-dashboard {
+  background-color: var(--admin-bg-sidebar);
+  display: flex;
+  min-height: 100vh;
+  color: var(--admin-text-primary);
+}
+
+.cliente-content {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  background-color: var(--admin-bg-content);
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.cliente-page-header {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #D7D7D7;
+}
+
+.cliente-page-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.cliente-page-header p {
+  color: var(--admin-text-secondary);
+  font-size: 14px;
+  margin: 0;
 }
 
 /* Header do Cliente */
@@ -1512,7 +1555,15 @@ input:focus {
     padding: 20px 16px;
   }
 
+  .cliente-content {
+    padding: 20px 16px;
+  }
+
   .admin-page-header {
+    margin-bottom: 24px;
+  }
+
+  .cliente-page-header {
     margin-bottom: 24px;
   }
 
