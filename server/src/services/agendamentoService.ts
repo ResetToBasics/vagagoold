@@ -142,6 +142,14 @@ export const agendamentoService = {
         );
     },
     criar: async (dados: { dataHora: string; clienteId: string; salaId: string }) => {
+        const cliente = await User.findByPk(dados.clienteId);
+        if (!cliente || cliente.role !== 'cliente') {
+            throw new ApiError(404, 'Cliente nao encontrado');
+        }
+        if (!cliente.ativo) {
+            throw new ApiError(403, 'Cliente inativo');
+        }
+
         const sala = await Sala.findByPk(dados.salaId);
         if (!sala) throw new ApiError(404, 'Sala nao encontrada');
         if (!sala.ativa) throw new ApiError(400, 'Sala inativa');
@@ -186,9 +194,7 @@ export const agendamentoService = {
             status: 'pendente',
         });
 
-        const cliente = await User.findByPk(dados.clienteId);
-
-        return mapAgendamento(agendamento, cliente ?? undefined, sala);
+        return mapAgendamento(agendamento, cliente, sala);
     },
     atualizar: async (id: string, dados: Partial<Agendamento>) => {
         const agendamento = await Agendamento.findByPk(id);

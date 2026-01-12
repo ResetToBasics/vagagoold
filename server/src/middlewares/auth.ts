@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
+import { User } from '../models';
 import { ApiError } from '../utils/http';
 
 interface TokenPayload {
@@ -9,7 +10,7 @@ interface TokenPayload {
 }
 
 export const requireAuth = (roles?: string[]) => {
-    return (req: Request, _res: Response, next: NextFunction) => {
+    return async (req: Request, _res: Response, next: NextFunction) => {
         const header = req.headers.authorization;
         const tokenHeader = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
         const tokenCookie = extrairTokenCookie(req.headers.cookie);
@@ -22,6 +23,16 @@ export const requireAuth = (roles?: string[]) => {
         try {
             const payload = jwt.verify(token, env.jwtSecret) as TokenPayload;
             req.user = { id: payload.sub, role: payload.role };
+
+            if (payload.role === 'cliente') {
+                const usuario = await User.findByPk(payload.sub);
+                if (!usuario) {
+                    return next(new ApiError(401, 'Usuario nao encontrado'));
+                }
+                if (!usuario.ativo) {
+                    return next(new ApiError(403, 'Cliente inativo'));
+                }
+            }
 
             if (roles && !roles.includes(payload.role)) {
                 return next(new ApiError(403, 'Acesso negado'));
