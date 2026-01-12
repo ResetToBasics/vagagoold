@@ -28,6 +28,7 @@ export function Sidebar() {
     const profileRef = useRef<HTMLDivElement | null>(null);
     const [menuAberto, setMenuAberto] = useState(false);
     const [nomeAdmin, setNomeAdmin] = useState('Admin');
+    const [menuMobileAberto, setMenuMobileAberto] = useState(false);
 
     /**
      * Renderiza o ícone correto baseado no tipo
@@ -87,15 +88,31 @@ export function Sidebar() {
         }
     }, []);
 
+    useEffect(() => {
+        setMenuMobileAberto(false);
+    }, [pathname]);
+
     return (
-        <aside className="admin-sidebar">
+        <aside className={`admin-sidebar${menuMobileAberto ? ' admin-sidebar--mobile-open' : ''}`}>
             {/* Área do logo */}
             <div className="admin-logo-area">
                 <LogoVagaGoold largura={52} altura={52} className="admin-logo" />
+                <button
+                    type="button"
+                    className="admin-hamburger"
+                    aria-label={menuMobileAberto ? 'Fechar menu' : 'Abrir menu'}
+                    aria-expanded={menuMobileAberto}
+                    aria-controls="admin-nav"
+                    onClick={() => setMenuMobileAberto((estadoAtual) => !estadoAtual)}
+                >
+                    <span />
+                    <span />
+                    <span />
+                </button>
             </div>
 
             {/* Menu de navegação */}
-            <nav className="admin-nav" aria-label="Menu principal">
+            <nav className="admin-nav" aria-label="Menu principal" id="admin-nav">
                 {MENU_ADMIN.map((item) => {
                     const ativo = estaAtivo(item.href);
 
@@ -105,6 +122,7 @@ export function Sidebar() {
                             className={`admin-nav-item ${ativo ? 'admin-nav-item--active' : ''}`}
                             href={item.href}
                             aria-current={ativo ? 'page' : undefined}
+                            onClick={() => setMenuMobileAberto(false)}
                         >
                             {renderizarIcone(item.icone)}
                             {item.label}

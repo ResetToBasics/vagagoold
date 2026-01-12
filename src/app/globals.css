@@ -180,7 +180,8 @@ input:focus {
   border-bottom: 1px solid #d7d7d7;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 20px;
   width: 100%;
 }
@@ -189,6 +190,28 @@ input:focus {
   display: block;
   width: 52px;
   height: 52px;
+}
+
+.admin-hamburger {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border-color);
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #111;
+  border-radius: 999px;
 }
 
 .admin-nav {
@@ -1456,6 +1479,16 @@ input:focus {
 }
 
 @media (max-width: 720px) {
+  .admin-hamburger {
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  .admin-sidebar:not(.admin-sidebar--mobile-open) .admin-nav,
+  .admin-sidebar:not(.admin-sidebar--mobile-open) .admin-profile {
+    display: none;
+  }
+
   .admin-sidebar {
     border-right: none;
     border-bottom: 1px solid var(--admin-border-color);
