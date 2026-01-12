@@ -17,11 +17,12 @@
 export function formatarDataHora(data: Date | string): string {
     const dataObj = typeof data === 'string' ? new Date(data) : data;
 
-    const dia = dataObj.getDate().toString().padStart(2, '0');
-    const mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
-    const ano = dataObj.getFullYear();
-    const hora = dataObj.getHours().toString().padStart(2, '0');
-    const minuto = dataObj.getMinutes().toString().padStart(2, '0');
+    // Usa componentes em UTC para evitar deslocamento quando o backend retorna ISO com "Z"
+    const dia = dataObj.getUTCDate().toString().padStart(2, '0');
+    const mes = (dataObj.getUTCMonth() + 1).toString().padStart(2, '0');
+    const ano = dataObj.getUTCFullYear();
+    const hora = dataObj.getUTCHours().toString().padStart(2, '0');
+    const minuto = dataObj.getUTCMinutes().toString().padStart(2, '0');
 
     return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
 }
@@ -35,9 +36,9 @@ export function formatarDataHora(data: Date | string): string {
 export function formatarData(data: Date | string): string {
     const dataObj = typeof data === 'string' ? new Date(data) : data;
 
-    const dia = dataObj.getDate().toString().padStart(2, '0');
-    const mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
-    const ano = dataObj.getFullYear();
+    const dia = dataObj.getUTCDate().toString().padStart(2, '0');
+    const mes = (dataObj.getUTCMonth() + 1).toString().padStart(2, '0');
+    const ano = dataObj.getUTCFullYear();
 
     return `${dia}/${mes}/${ano}`;
 }
