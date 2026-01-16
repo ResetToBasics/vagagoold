@@ -285,7 +285,7 @@ export default function AgendamentosPage() {
                             onChange={(e) => setBusca(e.target.value)}
                         />
                         <CampoData
-                            placeholder="Selecione"
+                            placeholder="dd/mm/aaaa"
                             type="date"
                             value={dataFiltro}
                             onChange={(e) => setDataFiltro(e.target.value)}

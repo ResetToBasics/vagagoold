@@ -45,8 +45,20 @@ interface CampoDataProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * Campo de seleção de data com ícone de calendário
  */
 export function CampoData({ placeholder = 'Selecione', ...props }: CampoDataProps) {
+    const valorAtual = props.value ?? props.defaultValue ?? '';
+    const valorTexto =
+        typeof valorAtual === 'string' || typeof valorAtual === 'number'
+            ? String(valorAtual)
+            : '';
+    const mostrarPlaceholder = props.type === 'date' && !valorTexto;
+
     return (
         <div className="admin-input-wrapper admin-input-wrapper--compact">
+            {mostrarPlaceholder && (
+                <span className="admin-input-placeholder" aria-hidden="true">
+                    {placeholder}
+                </span>
+            )}
             <IconeCalendario largura={16} altura={16} className="admin-input-icon admin-input-icon--right" />
             <input
                 className="admin-input admin-input--right"

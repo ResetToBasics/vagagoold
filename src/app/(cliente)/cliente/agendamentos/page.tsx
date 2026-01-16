@@ -242,7 +242,7 @@ export default function AgendamentosClientePage() {
                             larguraMaxima="400px"
                         />
                         <CampoData
-                            placeholder="Selecione"
+                            placeholder="dd/mm/aaaa"
                             type="date"
                             value={dataFiltro}
                             onChange={(e) => setDataFiltro(e.target.value)}

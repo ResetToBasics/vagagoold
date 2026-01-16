@@ -411,6 +411,16 @@ input:focus {
   right: 10px;
 }
 
+.admin-input-placeholder {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 14px;
+  pointer-events: none;
+}
+
 .admin-input {
   width: 100%;
   max-width: 100%;
