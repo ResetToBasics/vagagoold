@@ -1146,6 +1146,14 @@ input:focus {
   margin: 0;
 }
 
+@media (max-width: 960px) {
+  .cliente-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 24px;
+  }
+}
+
 /* Header do Cliente */
 /* Header do Cliente */
 .cliente-header {
