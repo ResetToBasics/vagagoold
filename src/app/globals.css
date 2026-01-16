@@ -387,10 +387,12 @@ input:focus {
   position: relative;
   max-width: 300px;
   width: 100%;
+  min-width: 0;
 }
 
 .admin-input-wrapper--compact {
   max-width: 160px;
+  min-width: 0;
 }
 
 .admin-input-icon {
@@ -401,6 +403,7 @@ input:focus {
   color: #999;
   width: 16px;
   height: 16px;
+  pointer-events: none;
 }
 
 .admin-input-icon--right {
@@ -410,6 +413,8 @@ input:focus {
 
 .admin-input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 10px 12px 10px 36px;
   border: 1px solid var(--admin-border-color);
   border-radius: 4px;
@@ -417,6 +422,11 @@ input:focus {
   outline: none;
   color: #111;
   background: #fff;
+}
+
+.admin-input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .admin-input[type="date"]::-webkit-calendar-picker-indicator {
