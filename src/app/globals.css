@@ -1093,6 +1093,16 @@ input:focus {
     padding: 24px;
   }
 
+  .admin-inputs {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .admin-input-wrapper,
+  .admin-input-wrapper--compact {
+    max-width: 100%;
+  }
+
   .admin-table-container {
     overflow-x: auto;
   }
