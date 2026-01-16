@@ -427,6 +427,7 @@ input:focus {
 .admin-input[type="date"] {
   appearance: none;
   -webkit-appearance: none;
+  height: 40px;
 }
 
 .admin-input[type="date"]::-webkit-calendar-picker-indicator {
